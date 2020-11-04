@@ -2,7 +2,12 @@ package app;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
+/**
+ * Imp
+ * 
+ * @author Samantha Tripp - Student ID: 101089563
+ *
+ */
 public class AccessControl {
 	
 	// SecVault Investments, Inc. system roles

@@ -8,8 +8,9 @@ public class Password {
 	/**
 	 * Default password file constructor.
 	 */
-	public Password(String directory) {
-		// Create passwd.txt file
+	public Password() {
+		
+		// Create passwd.txt file in current directory
 		File passwd = new File("./passwd.txt");
 		try {
 			passwd.createNewFile();
@@ -18,7 +19,7 @@ public class Password {
 		} catch (IOException e) {
 			System.err.println("Unable to create passwd.txt file.");
 			e.printStackTrace();
-		}
+		} 
 		
 		// Set permissions for passwd.txt
 		// Read - all system users
@@ -29,12 +30,29 @@ public class Password {
 	}
 	
 	
-	public boolean addRecord() {
-		return false;
+	public boolean addRecord(String username, String password, String role, String name, String phone, String email) {
+		return true;
 	}
 	
 	public String retrieveRecord() {
 		return null;
+	}
+	
+	public boolean checkPassword(String password) {
+		return true;
+	}
+	
+	/**
+	 * Check if valid role is provided in user enrollment.
+	 * 
+	 * @param role String
+	 * @return boolean 
+	 */
+	public boolean checkRole(String role) {
+		for(RoleEnum r : RoleEnum.values()) {
+			if (r.toString().equals(role)) return true;
+		}
+		return false;
 	}
 	
 	
