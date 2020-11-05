@@ -12,13 +12,18 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-
+/**
+ * Password.java creates a password file and manages the addition and retrieval
+ * of user records.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public class Password {
 	
 	public ArrayList<String> weakPasswords;
@@ -122,15 +127,13 @@ public class Password {
 				// Split line with " : " as delimiter
 				attributes = line.split(" : "); 
 				if (attributes[0].equals(username)) {
-					System.out.println("Made it here");
+					System.out.println("Verifying password...");
 					
 					// Get salt byte array from record
 					Base64.Decoder dec = Base64.getDecoder();
 					byte[] salt = dec.decode(attributes[1]);
 					String hash = hashPW(password,salt);
-					System.out.println(salt);
-					System.out.println(hash);
-					
+		
 					// Compare hash byte arrays
 					if (hash.equals(attributes[2])) { 
 						// Password verified
@@ -264,7 +267,5 @@ public class Password {
 			weakPasswords.add(pw);
 		}
 	}
-	
-	
 	
 }

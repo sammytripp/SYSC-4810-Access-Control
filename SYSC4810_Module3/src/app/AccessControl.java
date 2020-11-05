@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Stack;
 /**
- * Imp
+ * AccessControl.java implements the mechanism for enforcing the access control
+ * policy outlined by SecVault Investments, Inc.
  * 
  * @author Samantha Tripp - Student ID: 101089563
  *
@@ -207,7 +208,11 @@ public class AccessControl {
 				"financial_planner_contact",
 				"investment_analyst_contact"
 		};
+		String[] technicalSupportSpecialActions = {
+				"view_support_tickets"
+		};
 		technicalSupport.addReadActions(technicalSupportReadActions);
+		technicalSupport.addSpecialActions(technicalSupportSpecialActions);
 		
 		// Set COMPLIANCE_OFFICER permissions
 		String[] COReadActions = {
@@ -264,10 +269,9 @@ public class AccessControl {
 				if (object.equals(a)) {
 					System.out.println("ACCESS GRANTED");
 					return true;
-				} else {
-					System.out.println("Try again.");
 				}
 			}
+			System.out.println("Try again.");
 			
 		} else if (action.equals("write")) {
 			for (String a : role.getWriteActions()) {
@@ -284,10 +288,9 @@ public class AccessControl {
 						}
 					}
 					return true;
-				} else {
-					System.out.println("Try again.");
 				}
 			}
+			System.out.println("Try again.");
 		} else if (action.equals("request_support")) {
 			if (role.getRoleEnum().equals(RoleEnum.PREMIUM_CLIENT) ||
 				role.getRoleEnum().equals(RoleEnum.CLIENT)) {
@@ -310,7 +313,29 @@ public class AccessControl {
 			} else {
 				System.out.println("Try again.");
 			}
-	    } else if (action.equals("exit")) {
+	    } else if (action.equals("view_support_tickets")) {
+	    	if (role.getRoleEnum().equals(RoleEnum.TECHNICAL_SUPPORT)) {
+	    		if (accountAccessGranted.isEmpty()) {
+	    			System.out.println("No support tickets.");
+	    			return true;
+	    		}
+	    		while (!accountAccessGranted.isEmpty()) {
+	    			User supportUser = accountAccessGranted.pop();
+	    			System.out.println("Support requested by " + supportUser.getName());
+	    		}
+    			// Elevate permissions
+    			String[] elevatedReadActions = {
+    					"account_balance",
+    					"investment_portfolio",
+    			};
+    			user.getRole().addReadActions(elevatedReadActions);
+    			System.out.println("Permissions elevated for this session.");
+    			System.out.println(user.getRole().toString());
+    			return true;
+	    	} else {
+	    		System.out.println("Try again.");
+	    	}
+		} else if (action.equals("exit")) {
 			// Log out
 			System.out.println("Goodbye.");
 			return false;
