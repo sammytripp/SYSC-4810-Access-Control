@@ -30,7 +30,7 @@ public class EnrolUser {
 			do {
 				System.out.println("Password: ");
 				password = scanner.nextLine();
-			} while (!passwd.checkPassword(password));
+			} while (!passwd.checkPassword(username, password));
 			
 			// Prompt for name
 			String name;

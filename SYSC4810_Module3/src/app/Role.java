@@ -17,7 +17,7 @@ public class Role {
 		// Initialize action lists		
 		readActions = new ArrayList<String>();
 		writeActions = new ArrayList<String>();
-		specialActions = new ArrayList<String>();
+		specialActions = new ArrayList<String>(); 
 		
 	}
 	
