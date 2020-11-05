@@ -14,10 +14,34 @@ public enum RoleEnum {
 	
 	private RoleEnum(String role) {
 		this.role = role;
-	}
+	} 
 	
 	@Override
 	public String toString() {
 		return role;
 	}
+	
+	public static RoleEnum getEnum(String role) {
+			switch(role) {
+			case "Client":
+				return CLIENT;
+			case "Premium Client":
+				return PREMIUM_CLIENT;
+			case "Financial Advisor":
+				return FINANCIAL_ADVISOR;
+			case "Financial Planner":
+				return FINANCIAL_PLANNER;
+			case "Investment Analyst":
+				return INVESTMENT_ANALYST;
+			case "Teller":
+				return TELLER;
+			case "Technical Support":
+				return TECHNICAL_SUPPORT;
+			case "Compliance Officer":
+				return COMPLIANCE_OFFICER;
+			default:
+				return null;
+			}
+	}
+	
 }

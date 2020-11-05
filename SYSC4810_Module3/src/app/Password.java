@@ -1,7 +1,9 @@
 package app;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -10,6 +12,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.SecretKeyFactory;
@@ -55,6 +58,8 @@ public class Password {
 	}
 	
 	/**
+	 * Add user record to password file.
+	 * Format - username : salt : hash : role : contact_information
 	 * 
 	 * @param username String
 	 * @param password String
@@ -70,30 +75,18 @@ public class Password {
 		Random random = new SecureRandom();
 		byte[] salt = new byte[16];
 		random.nextBytes(salt);
-		
-		// Append salt to password
-		//password += salt;
+		String saltString = Arrays.toString(salt);
 		
 		// Create hashed password + salt
-		// Reference https://www.baeldung.com/java-password-hashing
-		byte[] hash = null;
-		try {
-			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
-			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			hash = factory.generateSecret(spec).getEncoded();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return false;
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
-			return false;
-		}
-		System.out.println(hash);
+		byte[] hash = hashPW(password, salt);
+		
+		// Convert hash to string
+		String hashString = Arrays.toString(hash);
 		
 		// Create record string
 		String record = "";
-		record += username + ":" + salt + ":" + hash + ":" + role;
-		record += ":" + name + "," + phone + "," + email;
+		record += username + " : " + saltString + " : " + hashString + " : " + role;
+		record += " : " + name + "," + phone + "," + email;
 		
 		
 		// Append record to passwd.txt
@@ -111,8 +104,70 @@ public class Password {
 		return true;
 	}
 	
-	public String retrieveRecord() {
+	/**
+	 * Retrieve user record from password file.
+	 * 
+	 * @param username String
+	 * @param password String
+	 * @return User
+	 */
+	public User retrieveRecord(String username, String password) {
+		User user;
+		String[] attributes;
+		
+		// Parse passwd.txt for input username
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader("./passwd.txt"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				// Split line with " : " as delimiter
+				attributes = line.split(" : "); 
+				if (attributes[0].equals(username)) {
+					System.out.println("Made it here");
+					// Hash input password using salt from record
+					byte[] hash = hashPW(password, attributes[1].getBytes("UTF-8"));
+					// Compare hash byte arrays
+					if (Arrays.equals(hash, attributes[2].getBytes("UTF-8"))) { 
+						// Password verified
+						String[] contact = attributes[4].split(",");
+						user = new User(attributes[0], RoleEnum.getEnum(attributes[3]), contact[0], contact[1], contact[2]);
+						reader.close();
+						return user;
+					}
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.err.println("Unable to read password file.");
+			e.printStackTrace();
+			return null;
+		}
+		// Unable to validate user
 		return null;
+	}
+	
+	/**
+	 * Internal method to compute hashed password.
+	 * Reference https://www.baeldung.com/java-password-hashing
+	 * 
+	 * @param password
+	 * @param salt
+	 * @return Byte array
+	 */
+	private byte[] hashPW(String password, byte[] salt) {
+		byte[] hash = null;
+		try {
+			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			hash = factory.generateSecret(spec).getEncoded();
+			return hash;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**

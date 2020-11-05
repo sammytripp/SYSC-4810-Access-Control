@@ -10,7 +10,7 @@ public class User {
 	
 	// Access control policy
 	private AccessControl policy;
-	private boolean grantSupportAccess;
+	private boolean grantSupportAccess; // DAC - Discretionary access control
 	
 	/**
 	 * Construct a SecVault Instruments, Inc. user, and assign them the
@@ -36,12 +36,20 @@ public class User {
 		grantSupportAccess = false;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public Role getRole() {
 		return role;
 	}
 
 	public String getUsername() {
 		return username;
+	}
+	
+	public boolean supportAccess() {
+		return grantSupportAccess;
 	}
 	
 	@Override

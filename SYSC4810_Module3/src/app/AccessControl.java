@@ -1,6 +1,8 @@
 package app;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Stack;
 /**
  * Imp
@@ -29,7 +31,7 @@ public class AccessControl {
 	/**
 	 * Construct an access control matrix.
 	 */
-	public AccessControl() {
+	public AccessControl() { 
 		 
 		// Initialize access control for all system roles
 		client = new Role(RoleEnum.CLIENT);
@@ -48,10 +50,15 @@ public class AccessControl {
 		
 		// Initialize new stack of users that have granted technical support
 		// access to view their account
-		accountAccessGranted = new Stack<User>();
-		
+		accountAccessGranted = new Stack<User>();	
 	}
 	
+	/**
+	 * Return system permissions for indicated role.
+	 * 
+	 * @param roleEnum
+	 * @return Role
+	 */
 	public Role getRole(RoleEnum roleEnum) {
 		Role role = null;
 		switch(roleEnum) {
@@ -207,17 +214,108 @@ public class AccessControl {
 				"client_information",
 				"investment_portfolio"
 		};
+		String[] COSpecialActions = {
+				"validate_modifications"
+		};
 		complianceOfficer.addReadActions(COReadActions);
+		complianceOfficer.addSpecialActions(COSpecialActions);
 	}	
-
 	
+	/**
+	 * Enforce attribute-based access controls specific to an authenticated user.
+	 * 
+	 * @param User
+	 * @return boolean
+	 */
+	public boolean enforceABAC(User user) {
+		
+		// Get current time
+		Calendar cal = Calendar.getInstance();
+	    SimpleDateFormat sdf = new SimpleDateFormat("HH");
+	    String time = sdf.format(cal.getTime());
+	    System.out.println("Current hour: " + time + ":00");
+	    int hour = Integer.parseInt(time);
+	    
+		// Teller role can only log in to system from 9 - 5.
+		if (user.getRole().getRoleEnum().equals(RoleEnum.TELLER)) {
+			if (hour < 9 || hour > 17) {
+				System.out.println("System access is available between 9:00 to 17:00.");
+				return false;
+			}
+		}
+		
+		// Add any other ABAC rules ...
+		
+		return true;
+	}
+
+	/**
+	 * Implementation of object access control.
+	 * 
+	 * @param user
+	 * @param action
+	 * @param object
+	 * @return boolean
+	 */
 	public boolean performAction(User user, String action, String object) {
 		Role role = user.getRole();
-		if (action == "read") {
+		if (action.equals("read")) {
+			for (String a : role.getReadActions()) {
+				if (object.equals(a)) {
+					System.out.println("ACCESS GRANTED");
+					return true;
+				} else {
+					System.out.println("Try again.");
+				}
+			}
 			
-			
-		}
-		return false;
+		} else if (action.equals("write")) {
+			for (String a : role.getWriteActions()) {
+				if (object.equals(a)) {
+					System.out.println("ACCESS GRANTED");
+					// Modifications to investment_portfolio must be validated by compliance officer
+					if (a.equals("investment_portfolio")) {
+						if (role.getRoleEnum().equals(RoleEnum.PREMIUM_CLIENT) ||
+							role.getRoleEnum().equals(RoleEnum.FINANCIAL_ADVISOR) ||
+							role.getRoleEnum().equals(RoleEnum.FINANCIAL_PLANNER) ||
+							role.getRoleEnum().equals(RoleEnum.INVESTMENT_ANALYST)) {
+							System.out.println("Modification awaiting validation.");
+							modifications.push(user);
+						}
+					}
+					return true;
+				} else {
+					System.out.println("Try again.");
+				}
+			}
+		} else if (action.equals("request_support")) {
+			if (role.getRoleEnum().equals(RoleEnum.PREMIUM_CLIENT) ||
+				role.getRoleEnum().equals(RoleEnum.CLIENT)) {
+				System.out.println("Permissions provided to technical support.");
+				accountAccessGranted.push(user);
+			} else {
+				System.out.println("Try again.");
+			}
+		} else if (action.equals("validate_modifications")) {
+			if (role.getRoleEnum().equals(RoleEnum.COMPLIANCE_OFFICER)) {
+				if (modifications.isEmpty()) {
+					System.out.println("No modifications to validate.");
+					return true;
+				}
+				while (!modifications.isEmpty()) {
+					User modUser = modifications.pop();
+					System.out.println("Changes by " + modUser.getName() + " validated.");
+				}
+				return true;
+			} else {
+				System.out.println("Try again.");
+			}
+	    } else if (action.equals("exit")) {
+			// Log out
+			System.out.println("Goodbye.");
+			return false;
+		} 
+		return true;
 	}
 	
 

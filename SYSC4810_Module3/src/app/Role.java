@@ -1,7 +1,6 @@
 package app;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Role {
 	
@@ -21,7 +20,7 @@ public class Role {
 		
 	}
 	
-	public RoleEnum getRole() {
+	public RoleEnum getRoleEnum() {
 		return role;
 	}
 	

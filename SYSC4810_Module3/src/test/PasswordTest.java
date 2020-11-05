@@ -24,7 +24,7 @@ public class PasswordTest {
 	}
 	
 	public static void testAddRecord() {
-		Password passwd = new Password();
+	
 		
 	}
 	
