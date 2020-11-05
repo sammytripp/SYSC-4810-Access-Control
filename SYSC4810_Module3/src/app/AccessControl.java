@@ -243,7 +243,7 @@ public class AccessControl {
 	    
 		// Teller role can only log in to system from 9 - 5.
 		if (user.getRole().getRoleEnum().equals(RoleEnum.TELLER)) {
-			if (hour < 9 || hour > 17) {
+			if (hour < 9 || hour > 16) {
 				System.out.println("System access is available between 9:00 to 17:00.");
 				return false;
 			}
