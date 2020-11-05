@@ -13,6 +13,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 
 import javax.crypto.SecretKeyFactory;
@@ -75,17 +76,15 @@ public class Password {
 		Random random = new SecureRandom();
 		byte[] salt = new byte[16];
 		random.nextBytes(salt);
-		String saltString = Arrays.toString(salt);
+		Base64.Encoder enc = Base64.getEncoder();
+		String saltString = enc.encodeToString(salt);
 		
 		// Create hashed password + salt
-		byte[] hash = hashPW(password, salt);
-		
-		// Convert hash to string
-		String hashString = Arrays.toString(hash);
+		String hash = hashPW(password, salt);
 		
 		// Create record string
 		String record = "";
-		record += username + " : " + saltString + " : " + hashString + " : " + role;
+		record += username + " : " + saltString + " : " + hash + " : " + role;
 		record += " : " + name + "," + phone + "," + email;
 		
 		
@@ -124,10 +123,16 @@ public class Password {
 				attributes = line.split(" : "); 
 				if (attributes[0].equals(username)) {
 					System.out.println("Made it here");
-					// Hash input password using salt from record
-					byte[] hash = hashPW(password, attributes[1].getBytes("UTF-8"));
+					
+					// Get salt byte array from record
+					Base64.Decoder dec = Base64.getDecoder();
+					byte[] salt = dec.decode(attributes[1]);
+					String hash = hashPW(password,salt);
+					System.out.println(salt);
+					System.out.println(hash);
+					
 					// Compare hash byte arrays
-					if (Arrays.equals(hash, attributes[2].getBytes("UTF-8"))) { 
+					if (hash.equals(attributes[2])) { 
 						// Password verified
 						String[] contact = attributes[4].split(",");
 						user = new User(attributes[0], RoleEnum.getEnum(attributes[3]), contact[0], contact[1], contact[2]);
@@ -136,14 +141,14 @@ public class Password {
 					}
 				}
 			}
+			// Unable to validate user
 			reader.close();
+			return null;
 		} catch (IOException e) {
 			System.err.println("Unable to read password file.");
 			e.printStackTrace();
 			return null;
-		}
-		// Unable to validate user
-		return null;
+		}	
 	}
 	
 	/**
@@ -154,13 +159,15 @@ public class Password {
 	 * @param salt
 	 * @return Byte array
 	 */
-	private byte[] hashPW(String password, byte[] salt) {
-		byte[] hash = null;
+	private String hashPW(String password, byte[] salt) {
+		String hashString;
 		try {
 			KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
 			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			hash = factory.generateSecret(spec).getEncoded();
-			return hash;
+			byte[] hash = factory.generateSecret(spec).getEncoded();
+			Base64.Encoder enc = Base64.getEncoder();
+			hashString = enc.encodeToString(hash);
+			return hashString;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return null;

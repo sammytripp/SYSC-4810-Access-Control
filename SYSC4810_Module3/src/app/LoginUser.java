@@ -14,9 +14,10 @@ public class LoginUser {
 		System.out.println("____________________________");
 		
 		Scanner scanner = new Scanner(System.in);
+		String username;
+		String password;
 		do {
 			// Prompt for username
-			String username;
 			do {
 				System.out.println("Username: ");
 				username = scanner.nextLine();
@@ -24,7 +25,6 @@ public class LoginUser {
 			} while (username.isEmpty() || username.equals("/n"));
 			
 			// Prompt for password
-			String password;
 			do {
 				System.out.println("Password: ");
 				password = scanner.nextLine();
@@ -58,10 +58,7 @@ public class LoginUser {
 						}
 					}
 				}
-			} else {
-				System.err.println("Unable to validate password.");
-			}
-			
+			} else System.err.println("Unable to validate password.");
 		} while (true);
 	}
 }
