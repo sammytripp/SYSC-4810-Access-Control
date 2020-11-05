@@ -1,5 +1,10 @@
 package app;
-
+/**
+ * Enumeration class to represent SecVault Investments, Inc. system roles.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public enum RoleEnum {
 	CLIENT 				("Client"),
 	PREMIUM_CLIENT 		("Premium Client"),

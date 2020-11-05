@@ -3,8 +3,7 @@ package test;
 import app.Password;
 
 /**
- * Test cases for the Password.java class, which implements and manages 
- * the password file for SecVault Investments, Inc.
+ * Test cases for the SecVault Investments, Inc. password policy checker.
  * 
  * @author Samantha Tripp - Student ID: 101089563
  * 
@@ -13,28 +12,10 @@ public class PasswordTest {
 	
 	public static void main(String argv[]) {
 		
-		// Test adding records to passwd.txt
-		testAddRecord();
-		
-		// Test retrieving records from passwd.txt
-		testRetrieveRecord();
-		
 		// Test password checker for user enrollment
 		testCheckPassword();
 	}
 	
-	public static void testAddRecord() {
-	
-		
-	}
-	
-	public static void testRetrieveRecord() {
-		
-	}
-	
-	/**
-	 * Test cases for checkPassword()
-	 */
 	public static void testCheckPassword() {
 		Password passwd = new Password();
 		

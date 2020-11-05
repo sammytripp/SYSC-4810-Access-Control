@@ -1,7 +1,12 @@
 package app;
 
 import java.util.Scanner;
-
+/**
+ * User enrollment interface for SecVault Investments, Inc. authentication system.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public class EnrolUser {
 	
 	public static void main(String argv[]) {

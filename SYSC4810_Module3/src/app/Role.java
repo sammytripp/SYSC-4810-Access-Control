@@ -1,7 +1,12 @@
 package app;
 
 import java.util.ArrayList;
-
+/**
+ * Role.java manages the permissions associated with a given role.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public class Role {
 	
 	private RoleEnum role;	

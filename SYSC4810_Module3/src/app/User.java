@@ -1,5 +1,11 @@
 package app;
 
+/**
+ * Representation of a SecVault Investments, Inc. system user.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public class User {
 	// User information
 	private String username;
@@ -13,8 +19,7 @@ public class User {
 	private boolean grantSupportAccess; // DAC - Discretionary access control
 	
 	/**
-	 * Construct a SecVault Instruments, Inc. user, and assign them the
-	 * indicated role.
+	 * Construct a SecVault Instruments, Inc. user, and assign them the provided role.
 	 * 
 	 * @param username String
 	 * @param roleEnum RoleEnum

@@ -1,7 +1,12 @@
 package app;
 
 import java.util.Scanner;
-
+/**
+ * User login interface for SecVault Investments, Inc. authentication system.
+ * 
+ * @author Samantha Tripp - ID: 101089563
+ *
+ */
 public class LoginUser {
 	
 	public static void main(String argv[]) {
@@ -16,6 +21,7 @@ public class LoginUser {
 		Scanner scanner = new Scanner(System.in);
 		String username;
 		String password;
+		AccessControl policy = new AccessControl();
 		do {
 			// Prompt for username
 			do {
@@ -35,11 +41,10 @@ public class LoginUser {
 			// Retrieve user record from login information
 			User user = passwd.retrieveRecord(username, password);
 			if (user != null) {
-				AccessControl policy = new AccessControl();
 				
 				// Enforce ABAC
 				if(policy.enforceABAC(user)) {
-					System.out.println("LOGIN SUCCESSFUL!");
+					System.out.println("LOGIN SUCCESSFUL!\n");
 					System.out.println("Welcome " + user.getUsername());
 					
 					// Print available actions
@@ -48,7 +53,7 @@ public class LoginUser {
 					String input;
 					String [] delimitedInput;
 					while (processActions) {
-						System.out.println("Enter action (or 'exit'):");
+						System.out.println("\nEnter action (or 'exit'):");
 						input = scanner.nextLine();
 						delimitedInput = input.split(" ");
 						if (delimitedInput.length > 1) {

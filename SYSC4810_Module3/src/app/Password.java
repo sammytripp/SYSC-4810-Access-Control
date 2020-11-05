@@ -14,9 +14,9 @@ import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Random;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+
 /**
  * Password.java creates a password file and manages the addition and retrieval
  * of user records.

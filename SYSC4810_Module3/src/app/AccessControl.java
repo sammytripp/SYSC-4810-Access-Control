@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Stack;
+
 /**
  * AccessControl.java implements the mechanism for enforcing the access control
  * policy outlined by SecVault Investments, Inc.
@@ -97,8 +98,7 @@ public class AccessControl {
 	}
 	
 	/**
-	 * Internal method to set the default read/write permissions
-	 * for each system role.
+	 * Internal method to set the RBAC permissions.
 	 */
 	private void setPermissions() {
 		// Set CLIENT permissions
